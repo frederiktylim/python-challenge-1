@@ -1,12 +1,9 @@
 # Menu dictionary
-
-
-
 menu = {
     "Snacks": {
-        "Cookie": .99,
-        "Banana": .69,
-        "Apple": .49,
+        "Cookie": 0.99,
+        "Banana": 0.69,
+        "Apple": 0.49,
         "Granola bar": 1.99
     },
     "Meals": {
@@ -54,15 +51,13 @@ menu = {
 }
 
 # 1. Set up order list. Order list will store a list of dictionaries for
-# menu item name, item price, and quantity ordered; 
+# menu item name, item price, and quantity ordered;
 FT_Order_List = []
-
 
 # Launch the store and present a greeting to the customer
 print("Welcome to the variety food truck.")
 
-# Customers may want to order multiple items, so let's create a continuous
-# loop
+# Customers may want to order multiple items, so let's create a continuous loop
 place_order = True
 while place_order:
     # Ask the customer from which menu category they want to order
@@ -73,8 +68,7 @@ while place_order:
     # Create a dictionary to store the menu for later retrieval
     menu_items = {}
 
-    # Print the options to choose from menu headings (all the first level
-    # dictionary items in menu).
+    # Print the options to choose from menu headings (all the first level dictionary items in menu).
     for key in menu.keys():
         print(f"{i}: {key}")
         # Store the menu category associated with its menu item number
@@ -122,35 +116,42 @@ while place_order:
                     }
                     i += 1
             # 2. FT Ask customer to input menu item number
-            menu_category = input("Enter your selection from the menu.")
+            menu_item = input("Enter your selection from the menu: ")
 
-            # 3. FT Check if the customer typed a number LINE 86 IN SOLUTION
-             if menu_category.isdigit():
+            # 3. FT Check if the customer typed a number
+            if menu_item.isdigit():
                 # Convert the menu selection to an integer
-                menu_category = int(menu_category)   
+                menu_item = int(menu_item)
 
-                # 4. FT Check if the menu selection is in the menu items.
-                #LINE 89 FROM SOLUTION
-
+                # 4. FT Check if the menu selection is in the menu items
+                if menu_item in menu_items.keys():
                     # Store the item name as a variable
-                    #LINE 91
-
+                    menu_item_name = menu_items[menu_item]["Item name"]
+                    menu_item_price = menu_items[menu_item]["Price"]
 
                     # Ask the customer for the quantity of the menu item
-                    #CUSTOMER INPUT CODE
-
+                    requested_quantity = input("How many of these would you like? ")
 
                     # Check if the quantity is a number, default to 1 if not
-                    #LINE 128
-
+                    if requested_quantity.isdigit():
+                        requested_quantity = int(requested_quantity)
+                    else:
+                        print("Your input is not valid. The requested quantity has defaulted to 1.")
+                        requested_quantity = 1
 
                     # Add the item name, price, and quantity to the order list
-                    #SIMILAR TO LINE 119
+                    FT_Order_List.append({
+                        "Item name": menu_item_name,
+                        "Price": menu_item_price,
+                        "Quantity": requested_quantity
+                    })
 
-                    # Tell the customer that their input isn't valid
-
-
-                # Tell the customer they didn't select a menu option
+                else:
+                    # Tell the customer they didn't select a menu option
+                    print(f"{menu_item} was not a menu option.")
+            else:
+                # Tell the customer they didn't select a number
+                print("You didn't select a valid menu item number.")
 
         else:
             # Tell the customer they didn't select a menu option
@@ -161,52 +162,39 @@ while place_order:
 
     while True:
         # Ask the customer if they would like to order anything else
-        keep_ordering = input("Would you like to keep ordering? (Y)es or (N)o ")
+        keep_ordering = input("Would you like to keep ordering? (Y)es or (N)o ").lower()
 
         # 5. Check the customer's input
-
-                # Keep ordering
-
-                # Exit the keep ordering question loop
-
-                # Complete the order
-
-                # Since the customer decided to stop ordering, thank them for
-                # their order
-
-                # Exit the keep ordering question loop
-
-
-                # Tell the customer to try again
-
-                #SEE LINE 84-85 IN SOLUTION
-
+        if keep_ordering in ['y', 'yes']:
+            break
+        elif keep_ordering in ['n', 'no']:
+            place_order = False
+            break
+        else:
+            print("Please enter 'Y' for Yes or 'N' for No.")
 
 # Print out the customer's order
-print("This is what we are preparing for you.\n")
-
-# Uncomment the following line to check the structure of the order
-#print(order)
-
+print("This is what we are preparing for you:\n")
 print("Item name                 | Price  | Quantity")
 print("--------------------------|--------|----------")
 
 # 6. Loop through the items in the customer's order
-
+for order in FT_Order_List:
     # 7. Store the dictionary items as variables
-    #LOOP TRHOUGH THE DICTIONARY TO STORE AND PRINT THE ITEMS ON THE MENU
+    item_name = order["Item name"]
+    item_price = order["Price"]
+    item_quantity = order["Quantity"]
 
     # 8. Calculate the number of spaces for formatted printing
-    #ADD THE MATH
-
-    # 9. Create space strings
-    #E.G. LINE 54 ON SOLUTION
+    num_item_spaces = 24 - len(item_name)
+    num_price_spaces = 6 - len(f"${item_price:.2f}")
+    item_spaces = " " * num_item_spaces
+    price_spaces = " " * num_price_spaces
 
     # 10. Print the item name, price, and quantity
-    #LOOK AT LINE 101 LOGIC
-
+    print(f"{item_name}{item_spaces} | ${item_price:.2f}{price_spaces} | {item_quantity}")
 
 # 11. Calculate the cost of the order using list comprehension
-# COMPREHENSION; FOR LOOPS
-# Multiply the price by quantity for each item in the order list, then sum()
-# and print the prices.
+total_cost = sum(order["Price"] * order["Quantity"] for order in FT_Order_List)
+print("\n" + "-" * 42)
+print(f"Total cost: ${total_cost:.2f}")
